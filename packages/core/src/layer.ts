@@ -31,17 +31,3 @@ export interface Layer {
 }
 
 export const defineLayer = <T extends Layer>(layer: T): T => layer;
-
-const trolLayer = defineLayer({
-	id: "trolear",
-	listeners: [
-		{
-			event: Events.MessageCreate,
-			listener: ({ message, ctx }) => {
-				console.log(message);
-				ctx.getAPI(trolLayer).moyai();
-			},
-		},
-	],
-	api: { moyai: () => "moyai" },
-});
