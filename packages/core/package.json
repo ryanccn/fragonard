@@ -1,0 +1,27 @@
+{
+	"name": "@fragonard/core",
+	"version": "0.1.0",
+	"description": "",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"files": [
+		"README.md",
+		"LICENSE",
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup"
+	},
+	"author": "Ryan Cao <hello@ryanccn.dev>",
+	"license": "LGPL-3.0-only",
+	"devDependencies": {
+		"@types/node": "^20.1.2",
+		"discord.js": "^14.11.0",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.4"
+	},
+	"peerDependencies": {
+		"discord.js": "^14.11.0"
+	}
+}
