@@ -2,15 +2,17 @@ import { Events, Message, PartialMessage } from "discord.js";
 import { Context } from "./context";
 import { Client } from "./client";
 
-interface ListenerCallbackData {
+interface EventListenerCallbackData {
 	[Events.MessageCreate]: { message: Message };
 	[Events.MessageDelete]: { message: Message | PartialMessage };
 }
 
-type EventListener<E extends keyof ListenerCallbackData> = {
+export type EventListenerSupportedEvents = keyof EventListenerCallbackData;
+
+export type EventListener<E extends EventListenerSupportedEvents> = {
 	event: E;
 	listener: (
-		data: ListenerCallbackData[E] & {
+		data: EventListenerCallbackData[E] & {
 			ctx: Context;
 			client: Client;
 		}
