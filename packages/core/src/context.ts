@@ -1,5 +1,5 @@
-import { Client } from "./client";
-import { Layer } from "./layer";
+import { Client } from "~/client";
+import { Layer } from "~/layer";
 
 export class Context {
 	private client: Client;

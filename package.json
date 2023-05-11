@@ -4,6 +4,7 @@
 	"private": true,
 	"description": "Fragonard monorepo",
 	"scripts": {
+		"publish": "pnpm publish --recursive --filter '!test-bot' --access public",
 		"lint": "eslint packages/"
 	},
 	"author": "Ryan Cao <hello@ryanccn.dev>",

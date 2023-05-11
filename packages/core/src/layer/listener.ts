@@ -1,6 +1,6 @@
 import { Events, Message, PartialMessage } from "discord.js";
-import { Context } from "./context";
-import { Client } from "./client";
+import { Client } from "~/client";
+import { Context } from "~/context";
 
 interface EventListenerCallbackData {
 	[Events.MessageCreate]: { message: Message };
@@ -22,12 +22,3 @@ export type EventListener<E extends EventListenerSupportedEvents> = {
 export type LayerListener =
 	| EventListener<Events.MessageCreate>
 	| EventListener<Events.MessageDelete>;
-
-export interface Layer {
-	id: string;
-	listeners?: LayerListener[];
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	api?: { [key: string]: Function };
-}
-
-export const defineLayer = <T extends Layer>(layer: T): T => layer;
