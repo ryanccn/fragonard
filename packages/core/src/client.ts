@@ -22,6 +22,8 @@ export class Client {
 	}
 
 	private rebuildListeners() {
+		this.listeners.clear();
+
 		for (const layer of this.layers) {
 			if (layer.listeners) {
 				for (const listener of layer.listeners) {
