@@ -5,7 +5,7 @@ import { GatewayIntentBits, OAuth2Scopes } from "discord.js";
 import { testLayer1, testLayer2, testLayer3 } from "./layers";
 
 const client = new Client({
-	clientOptions: {
+	discordOptions: {
 		intents:
 			GatewayIntentBits.Guilds |
 			GatewayIntentBits.GuildMessages |
@@ -19,7 +19,9 @@ client.use(testLayer1);
 client.use(testLayer2);
 client.use(testLayer3);
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-client.login(process.env.DISCORD_TOKEN!).then(() => {
-	console.log(client.discord.generateInvite({ scopes: [OAuth2Scopes.Bot] }));
-});
+client
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	.login({ app: process.env.DISCORD_APP!, token: process.env.DISCORD_TOKEN! })
+	.then(() => {
+		console.log(client.discord.generateInvite({ scopes: [OAuth2Scopes.Bot] }));
+	});
