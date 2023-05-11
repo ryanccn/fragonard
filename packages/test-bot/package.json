@@ -1,0 +1,19 @@
+{
+	"name": "@fragonard/test-bot",
+	"version": "0.0.0",
+	"description": "Test bot for Fragonard",
+	"private": true,
+	"scripts": {
+		"start": "tsx index.ts"
+	},
+	"author": "Ryan Cao <hello@ryanccn.dev>",
+	"license": "LGPL-3.0-only",
+	"devDependencies": {
+		"@fragonard/core": "workspace:^",
+		"@types/node": "^20.1.2",
+		"discord.js": "^14.11.0",
+		"dotenv": "^16.0.3",
+		"tsx": "^3.12.7",
+		"typescript": "^5.0.4"
+	}
+}
