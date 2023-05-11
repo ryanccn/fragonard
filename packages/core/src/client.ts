@@ -13,6 +13,10 @@ export class Client {
 	}
 
 	use(layer: Layer) {
+		if (this.layers.some((l) => l.id === layer.id)) {
+			throw new Error(`Layer with ID ${layer.id} already exists!`);
+		}
+
 		this.layers.push(layer);
 		this.rebuildListeners();
 	}
