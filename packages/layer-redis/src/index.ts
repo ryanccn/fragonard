@@ -10,9 +10,6 @@ const client = _client.connect().then(() => _client);
 export default defineLayer({
 	id: "official-layer-redis",
 	api: {
-		getClient() {
-			return client;
-		},
 		async get(k: string) {
 			return await (await client).get(k);
 		},
