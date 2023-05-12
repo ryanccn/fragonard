@@ -6,9 +6,12 @@ export const testLayer1 = {
 	listeners: [
 		{
 			event: Events.MessageCreate,
-			listener: async ({ message }) => {
+			listener: async ({ message, logger }) => {
 				if (message.author.bot) return;
 				await message.reply("Hello 1");
+				logger.log("Boop!");
+				logger.warn("Boop!");
+				logger.error("Boom!");
 			},
 		},
 	],

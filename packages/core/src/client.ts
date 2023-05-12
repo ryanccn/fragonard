@@ -13,6 +13,7 @@ import {
 	EventListenerSupportedEvents,
 } from "~/layer/listener";
 import { Context } from "~/context";
+import { createConsola, ConsolaInstance } from "consola";
 
 interface ClientOptions {
 	discordOptions: DiscordOptions;
@@ -25,6 +26,8 @@ export class Client {
 
 	private readonly options: ClientOptions;
 	private listeners: Map<EventListenerSupportedEvents, LayerListener[]>;
+	private listenerLayerMap: Map<LayerListener, Layer>;
+	private layerLoggers: Map<Layer, ConsolaInstance>;
 	private commands: LayerCommands;
 
 	constructor(options: ClientOptions) {
@@ -36,6 +39,8 @@ export class Client {
 
 		this.layers = [];
 		this.listeners = new Map();
+		this.listenerLayerMap = new Map();
+		this.layerLoggers = new Map();
 		this.commands = [];
 
 		this.registerListeners();
@@ -47,16 +52,20 @@ export class Client {
 		}
 
 		this.layers.push(layer);
+		this.layerLoggers.set(layer, createConsola().withTag(layer.id));
+
 		this.rebuildListeners();
 		this.rebuildCommands();
 	}
 
 	private rebuildListeners() {
 		this.listeners.clear();
+		this.listenerLayerMap.clear();
 
 		for (const layer of this.layers) {
 			if (layer.listeners) {
 				for (const listener of layer.listeners) {
+					this.listenerLayerMap.set(listener, layer);
 					const existingArr = this.listeners.get(listener.event);
 					if (existingArr) {
 						existingArr.push(listener);
@@ -82,6 +91,11 @@ export class Client {
 		return listenerList as EventListener<E>[];
 	}
 
+	private getListenerLogger(listener: LayerListener) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return this.layerLoggers.get(this.listenerLayerMap.get(listener)!)!;
+	}
+
 	private registerListeners() {
 		this.discord.on(Events.MessageCreate, async (message) => {
 			const listeners = this.getListenersOf(Events.MessageCreate);
@@ -89,7 +103,12 @@ export class Client {
 
 			if (listeners)
 				for (const listener of listeners) {
-					await listener.listener({ message, ctx, client: this });
+					await listener.listener({
+						message,
+						ctx,
+						client: this,
+						logger: this.getListenerLogger(listener),
+					});
 					if (ctx.shouldStopPropagation) break;
 				}
 		});
@@ -100,7 +119,12 @@ export class Client {
 
 			if (listeners)
 				for (const listener of listeners) {
-					await listener.listener({ message, ctx, client: this });
+					await listener.listener({
+						message,
+						ctx,
+						client: this,
+						logger: this.getListenerLogger(listener),
+					});
 					if (ctx.shouldStopPropagation) break;
 				}
 		});

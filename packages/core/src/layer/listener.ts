@@ -1,4 +1,6 @@
 import { Events, Message, PartialMessage } from "discord.js";
+import { ConsolaInstance } from "consola";
+
 import { Client } from "~/client";
 import { Context } from "~/context";
 
@@ -15,6 +17,7 @@ export type EventListener<E extends EventListenerSupportedEvents> = {
 		data: EventListenerCallbackData[E] & {
 			ctx: Context;
 			client: Client;
+			logger: ConsolaInstance;
 		}
 	) => void | Promise<void>;
 };
