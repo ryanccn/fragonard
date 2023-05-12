@@ -91,6 +91,11 @@ export class Client {
 		return listenerList as EventListener<E>[];
 	}
 
+	getLayerLogger(layer: Layer) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return this.layerLoggers.get(layer)!;
+	}
+
 	private getListenerLogger(listener: LayerListener) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return this.layerLoggers.get(this.listenerLayerMap.get(listener)!)!;

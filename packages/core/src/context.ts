@@ -13,6 +13,10 @@ export class Context {
 		this.shouldStopPropagation = true;
 	}
 
+	getLogger<T extends Layer>(layer: T) {
+		return this.client.getLayerLogger(layer);
+	}
+
 	getAPI<T extends Layer>(layer: T): T["api"] {
 		const api = this.safeGetAPI(layer);
 		if (!api)

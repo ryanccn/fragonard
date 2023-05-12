@@ -1,3 +1,1 @@
-# Fragonard
-
-A modular, extensible Discord bot framework.
+packages/core/README.md
