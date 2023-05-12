@@ -1,5 +1,5 @@
 import { Layer } from "@fragonard/core";
-import { Events } from "discord.js";
+import { Events, SlashCommandBuilder } from "discord.js";
 
 export const testLayer1 = {
 	id: "test-layer-1",
@@ -9,6 +9,14 @@ export const testLayer1 = {
 			listener: async ({ message }) => {
 				if (message.author.bot) return;
 				await message.reply("Hello 1");
+			},
+		},
+	],
+	commands: [
+		{
+			data: new SlashCommandBuilder().setName("ping").setDescription("Ping!"),
+			handler: async (interaction) => {
+				await interaction.reply("🥺");
 			},
 		},
 	],

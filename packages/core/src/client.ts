@@ -4,8 +4,9 @@ import {
 	Events,
 	REST,
 	Routes,
+	SlashCommandBuilder,
 } from "discord.js";
-import { Layer, LayerCommands } from "~/layer";
+import { Layer, LayerCommands, LayerSlashCommand } from "~/layer";
 import {
 	LayerListener,
 	EventListener,
@@ -102,6 +103,19 @@ export class Client {
 					await listener.listener({ message, ctx, client: this });
 					if (ctx.shouldStopPropagation) break;
 				}
+		});
+
+		this.discord.on(Events.InteractionCreate, async (interaction) => {
+			if (!interaction.isChatInputCommand()) return;
+			const slashCommands = this.commands.filter(
+				(k) => k.data instanceof SlashCommandBuilder
+			) as LayerSlashCommand[];
+
+			for (const command of slashCommands) {
+				if (command.data.name === interaction.commandName) {
+					await command.handler(interaction);
+				}
+			}
 		});
 	}
 

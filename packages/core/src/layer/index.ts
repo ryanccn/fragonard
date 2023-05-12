@@ -1,10 +1,22 @@
-import { Interaction, SlashCommandBuilder } from "discord.js";
+import {
+	ContextMenuCommandBuilder,
+	SlashCommandBuilder,
+	ChatInputCommandInteraction,
+	ContextMenuCommandInteraction,
+} from "discord.js";
 import { LayerListener } from "./listener";
 
-export type LayerCommands = {
+export interface LayerSlashCommand {
 	data: SlashCommandBuilder;
-	handler: (e: Interaction) => void | Promise<void>;
-}[];
+	handler: (interaction: ChatInputCommandInteraction) => void | Promise<void>;
+}
+
+export interface LayerContextMenuCommand {
+	data: ContextMenuCommandBuilder;
+	handler: (interaction: ContextMenuCommandInteraction) => void | Promise<void>;
+}
+
+export type LayerCommands = LayerSlashCommand[];
 
 export interface Layer {
 	id: string;
