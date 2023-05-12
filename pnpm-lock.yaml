@@ -42,6 +42,25 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
+  packages/layer-redis:
+    dependencies:
+      redis:
+        specifier: ^4.6.6
+        version: 4.6.6
+    devDependencies:
+      '@fragonard/core':
+        specifier: workspace:^
+        version: link:../core
+      '@types/node':
+        specifier: ^20.1.2
+        version: 20.1.2
+      tsup:
+        specifier: ^6.7.0
+        version: 6.7.0(typescript@5.0.4)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.0.4
+
   packages/test-bot:
     devDependencies:
       '@fragonard/core':
@@ -458,6 +477,55 @@ packages:
       fastq: 1.15.0
     dev: true
 
+  /@redis/bloom@1.2.0(@redis/client@1.5.7):
+    resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.7
+    dev: false
+
+  /@redis/client@1.5.7:
+    resolution: {integrity: sha512-gaOBOuJPjK5fGtxSseaKgSvjiZXQCdLlGg9WYQst+/GRUjmXaiB5kVkeQMRtPc7Q2t93XZcJfBMSwzs/XS9UZw==}
+    engines: {node: '>=14'}
+    dependencies:
+      cluster-key-slot: 1.1.2
+      generic-pool: 3.9.0
+      yallist: 4.0.0
+    dev: false
+
+  /@redis/graph@1.1.0(@redis/client@1.5.7):
+    resolution: {integrity: sha512-16yZWngxyXPd+MJxeSr0dqh2AIOi8j9yXKcKCwVaKDbH3HTuETpDVPcLujhFYVPtYrngSco31BUcSa9TH31Gqg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.7
+    dev: false
+
+  /@redis/json@1.0.4(@redis/client@1.5.7):
+    resolution: {integrity: sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.7
+    dev: false
+
+  /@redis/search@1.1.2(@redis/client@1.5.7):
+    resolution: {integrity: sha512-/cMfstG/fOh/SsE+4/BQGeuH/JJloeWuH+qJzM8dbxuWvdWibWAOAHHCZTMPhV3xIlH4/cUEIA8OV5QnYpaVoA==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.7
+    dev: false
+
+  /@redis/time-series@1.0.4(@redis/client@1.5.7):
+    resolution: {integrity: sha512-ThUIgo2U/g7cCuZavucQTQzA9g9JbDDY2f64u3AbAoz/8vE2lt2U37LamDUVChhaDA3IRT9R6VvJwqnUfTJzng==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.7
+    dev: false
+
   /@sapphire/async-queue@1.5.0:
     resolution: {integrity: sha512-JkLdIsP8fPAdh9ZZjrbHWR/+mZj0wvKS5ICibcLrRI1j84UmLMshx5n9QmL8b95d4onJ2xxiyugTgSAX7AalmA==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
@@ -765,6 +833,11 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /cluster-key-slot@1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   /color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -1102,6 +1175,11 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /generic-pool@3.9.0:
+    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
+    engines: {node: '>= 4'}
+    dev: false
 
   /get-stream@6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
@@ -1522,6 +1600,17 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /redis@4.6.6:
+    resolution: {integrity: sha512-aLs2fuBFV/VJ28oLBqYykfnhGGkFxvx0HdCEBYdJ99FFbSEMZ7c1nVKwR6ZRv+7bb7JnC0mmCzaqu8frgOYhpA==}
+    dependencies:
+      '@redis/bloom': 1.2.0(@redis/client@1.5.7)
+      '@redis/client': 1.5.7
+      '@redis/graph': 1.1.0(@redis/client@1.5.7)
+      '@redis/json': 1.0.4(@redis/client@1.5.7)
+      '@redis/search': 1.1.2(@redis/client@1.5.7)
+      '@redis/time-series': 1.0.4(@redis/client@1.5.7)
+    dev: false
+
   /resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -1862,7 +1951,6 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
-    dev: true
 
   /yaml@1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
