@@ -4,6 +4,8 @@
 	"private": true,
 	"description": "Fragonard monorepo",
 	"scripts": {
+		"build": "pnpm -r build",
+		"test-bot": "cd packages/test-bot && pnpm start",
 		"publish": "pnpm publish --recursive --filter '!test-bot' --access public",
 		"lint": "eslint packages/"
 	},

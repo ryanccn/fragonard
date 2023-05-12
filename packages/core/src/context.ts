@@ -2,7 +2,7 @@ import { Client } from "~/client";
 import { Layer } from "~/layer";
 
 export class Context {
-	private client: Client;
+	client: Client;
 	shouldStopPropagation = false;
 
 	constructor({ client }: { client: Client }) {

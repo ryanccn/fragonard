@@ -19,7 +19,8 @@ export const testLayer1 = {
 		{
 			type: LayerCommandType.SlashCommand,
 			data: new SlashCommandBuilder().setName("ping").setDescription("Ping!"),
-			handler: async (interaction) => {
+			handler: async ({ interaction, logger }) => {
+				logger.success("owo!");
 				await interaction.reply("🥺");
 			},
 		},
@@ -34,9 +35,15 @@ export const testLayer2 = {
 	listeners: [
 		{
 			event: Events.MessageCreate,
-			listener: async ({ message, ctx }) => {
+			listener: async ({ message, ctx, logger }) => {
 				if (message.author.bot) return;
-				await message.reply(`Hello, ${ctx.getAPI(testLayer1).getMessage()}`);
+
+				await message.reply({
+					content: `Hello, ${ctx.getAPI(testLayer1).getMessage()}`,
+					allowedMentions: { parse: [] },
+				});
+				logger.warn("moyai'd, stopping propagation");
+
 				ctx.stopPropagation();
 			},
 		},

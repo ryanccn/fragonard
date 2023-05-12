@@ -7,7 +7,11 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Layer } from "~/layer";
-import { LayerCommands, LayerSlashCommand } from "~/layer/commands";
+import {
+	LayerCommand,
+	LayerCommands,
+	LayerSlashCommand,
+} from "~/layer/commands";
 import {
 	LayerListener,
 	EventListener,
@@ -16,6 +20,7 @@ import {
 import { Context } from "~/context";
 import { createConsola, ConsolaInstance } from "consola";
 import { LayerButtons } from "./layer/buttons";
+import { LayerButton } from "./layer/buttons";
 
 interface ClientOptions {
 	discordOptions: DiscordOptions;
@@ -28,7 +33,10 @@ export class Client {
 
 	private readonly options: ClientOptions;
 	private listeners: Map<EventListenerSupportedEvents, LayerListener[]>;
-	private listenerLayerMap: Map<LayerListener, Layer>;
+	private layerReverseMap: Map<
+		LayerListener | LayerButton | LayerCommand,
+		Layer
+	>;
 	private layerLoggers: Map<Layer, ConsolaInstance>;
 	private commands: LayerCommands;
 	private buttons: LayerButtons;
@@ -42,7 +50,7 @@ export class Client {
 
 		this.layers = [];
 		this.listeners = new Map();
-		this.listenerLayerMap = new Map();
+		this.layerReverseMap = new Map();
 		this.layerLoggers = new Map();
 		this.commands = [];
 		this.buttons = [];
@@ -60,8 +68,8 @@ export class Client {
 		}
 
 		this.layers.push(layer);
-		this.layerLoggers.set(layer, createConsola().withTag(layer.id));
 
+		this.layerReverseMap.clear();
 		this.rebuildListeners();
 		this.rebuildCommands();
 		this.rebuildButtons();
@@ -69,12 +77,11 @@ export class Client {
 
 	private rebuildListeners() {
 		this.listeners.clear();
-		this.listenerLayerMap.clear();
 
 		for (const layer of this.layers) {
 			if (layer.listeners) {
 				for (const listener of layer.listeners) {
-					this.listenerLayerMap.set(listener, layer);
+					this.layerReverseMap.set(listener, layer);
 					const existingArr = this.listeners.get(listener.event);
 					if (existingArr) {
 						existingArr.push(listener);
@@ -90,7 +97,10 @@ export class Client {
 		this.commands = [];
 
 		for (const layer of this.layers) {
-			if (layer.commands) this.commands = this.commands.concat(layer.commands);
+			if (layer.commands) {
+				this.commands = this.commands.concat(layer.commands);
+				layer.commands.forEach((c) => this.layerReverseMap.set(c, layer));
+			}
 		}
 	}
 
@@ -98,7 +108,10 @@ export class Client {
 		this.buttons = [];
 
 		for (const layer of this.layers) {
-			if (layer.buttons) this.buttons = this.buttons.concat(layer.buttons);
+			if (layer.buttons) {
+				this.buttons = this.buttons.concat(layer.buttons);
+				layer.buttons.forEach((b) => this.layerReverseMap.set(b, layer));
+			}
 		}
 	}
 
@@ -109,13 +122,12 @@ export class Client {
 	}
 
 	getLayerLogger(layer: Layer) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.layerLoggers.get(layer)!;
-	}
+		const existingLogger = this.layerLoggers.get(layer);
+		if (existingLogger) return existingLogger;
 
-	private getListenerLogger(listener: LayerListener) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.layerLoggers.get(this.listenerLayerMap.get(listener)!)!;
+		const logger = createConsola().withTag(layer.id);
+		this.layerLoggers.set(layer, logger);
+		return logger;
 	}
 
 	private registerListeners() {
@@ -128,8 +140,7 @@ export class Client {
 					await listener.listener({
 						message,
 						ctx,
-						client: this,
-						logger: this.getListenerLogger(listener),
+						logger: this.getLayerLogger(this.layerReverseMap.get(listener)!),
 					});
 					if (ctx.shouldStopPropagation) break;
 				}
@@ -144,8 +155,7 @@ export class Client {
 					await listener.listener({
 						message,
 						ctx,
-						client: this,
-						logger: this.getListenerLogger(listener),
+						logger: this.getLayerLogger(this.layerReverseMap.get(listener)!),
 					});
 					if (ctx.shouldStopPropagation) break;
 				}
@@ -157,9 +167,15 @@ export class Client {
 				(k) => k.data instanceof SlashCommandBuilder
 			) as LayerSlashCommand[];
 
+			const ctx = new Context({ client: this });
+
 			for (const command of slashCommands) {
 				if (command.data.name === interaction.commandName) {
-					await command.handler(interaction);
+					const logger = this.getLayerLogger(
+						this.layerReverseMap.get(command)!
+					);
+
+					await command.handler({ interaction, ctx, logger });
 					break;
 				}
 			}
@@ -168,13 +184,17 @@ export class Client {
 		this.discord.on(Events.InteractionCreate, async (interaction) => {
 			if (!interaction.isButton()) return;
 
+			const ctx = new Context({ client: this });
+
 			for (const button of this.buttons) {
 				if (
 					typeof button.customId === "string"
 						? button.customId === interaction.customId
 						: !!button.customId.exec(interaction.customId)
 				) {
-					await button.handler(interaction);
+					const logger = this.getLayerLogger(this.layerReverseMap.get(button)!);
+
+					await button.handler({ interaction, ctx, logger });
 					break;
 				}
 			}

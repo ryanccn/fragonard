@@ -1,8 +1,11 @@
 import { ButtonInteraction } from "discord.js";
+import { BaseContext } from "./baseContext";
 
 export interface LayerButton {
 	customId: string | RegExp;
-	handler: (interaction: ButtonInteraction) => void | Promise<void>;
+	handler: (
+		data: { interaction: ButtonInteraction } & BaseContext
+	) => void | Promise<void>;
 }
 
 export type LayerButtons = LayerButton[];

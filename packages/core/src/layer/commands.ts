@@ -4,6 +4,7 @@ import {
 	ContextMenuCommandInteraction,
 	SlashCommandBuilder,
 } from "discord.js";
+import { BaseContext } from "./baseContext";
 
 export enum LayerCommandType {
 	SlashCommand,
@@ -13,15 +14,19 @@ export enum LayerCommandType {
 export interface LayerSlashCommand {
 	type: LayerCommandType.SlashCommand;
 	data: SlashCommandBuilder;
-	handler: (interaction: ChatInputCommandInteraction) => void | Promise<void>;
+	handler: (
+		data: { interaction: ChatInputCommandInteraction } & BaseContext
+	) => void | Promise<void>;
 }
 
 export interface LayerContextMenuCommand {
 	type: LayerCommandType.ContextMenuCommand;
 	data: ContextMenuCommandBuilder;
-	handler: (interaction: ContextMenuCommandInteraction) => void | Promise<void>;
+	handler: (
+		data: { interaction: ContextMenuCommandInteraction } & BaseContext
+	) => void | Promise<void>;
 }
 
-type LayerCommand = LayerSlashCommand | LayerContextMenuCommand;
+export type LayerCommand = LayerSlashCommand | LayerContextMenuCommand;
 
 export type LayerCommands = LayerCommand[];
