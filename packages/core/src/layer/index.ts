@@ -6,7 +6,7 @@ import { BaseContext } from "./baseContext";
 export type LayerReadyListener = (data: BaseContext) => void | Promise<void>;
 export type LayerErrorListener = (
 	data: {
-		error: unknown;
+		error: Error;
 	} & BaseContext
 ) => void | Promise<void>;
 

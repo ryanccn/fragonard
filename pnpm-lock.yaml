@@ -42,6 +42,24 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4
 
+  packages/layer-error-logging:
+    devDependencies:
+      '@fragonard/core':
+        specifier: workspace:^
+        version: link:../core
+      '@types/node':
+        specifier: ^20.1.2
+        version: 20.1.2
+      discord.js:
+        specifier: ^14.11.0
+        version: 14.11.0
+      tsup:
+        specifier: ^6.7.0
+        version: 6.7.0(typescript@5.0.4)
+      typescript:
+        specifier: ^5.0.4
+        version: 5.0.4
+
   packages/layer-redis:
     dependencies:
       redis:

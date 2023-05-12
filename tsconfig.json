@@ -3,7 +3,7 @@
 		"strict": true,
 		"strictNullChecks": true,
 		"module": "esnext",
-		"target": "es2019",
+		"target": "esnext",
 		"moduleResolution": "node",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
