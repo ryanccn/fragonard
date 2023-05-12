@@ -18,5 +18,3 @@ export type EventListener<E extends EventListenerSupportedEvents> = {
 export type LayerListener =
 	| EventListener<Events.MessageCreate>
 	| EventListener<Events.MessageDelete>;
-
-export type LayerListeners = LayerListener[];

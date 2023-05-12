@@ -6,19 +6,14 @@ import {
 	Routes,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Layer } from "~/layer";
+import { Layer, LayerErrorListener, LayerReadyListener } from "~/layer";
 
-import {
-	LayerCommand,
-	LayerCommands,
-	LayerSlashCommand,
-} from "~/layer/commands";
+import { LayerCommand, LayerSlashCommand } from "~/layer/commands";
 import {
 	LayerListener,
 	EventListener,
 	EventListenerSupportedEvents,
 } from "~/layer/listeners";
-import { LayerButtons } from "./layer/buttons";
 import { LayerButton } from "./layer/buttons";
 
 import { Context } from "~/context";
@@ -32,16 +27,24 @@ interface ClientOptions {
 export class Client {
 	public discord: DiscordClient;
 	public layers: Layer[];
-
-	private readonly options: ClientOptions;
-	private listeners: Map<EventListenerSupportedEvents, LayerListener[]>;
+	private layerLoggers: Map<Layer, Logger>;
 	private layerReverseMap: Map<
-		LayerListener | LayerButton | LayerCommand,
+		| LayerListener
+		| LayerButton
+		| LayerCommand
+		| LayerReadyListener
+		| LayerErrorListener,
 		Layer
 	>;
-	private layerLoggers: Map<Layer, Logger>;
-	private commands: LayerCommands;
-	private buttons: LayerButtons;
+
+	private readonly options: ClientOptions;
+
+	private listeners: Map<EventListenerSupportedEvents, LayerListener[]>;
+	private readyListeners: LayerReadyListener[];
+	private errorListeners: LayerErrorListener[];
+
+	private commands: LayerCommand[];
+	private buttons: LayerButton[];
 
 	private globalLogger: Logger;
 
@@ -53,9 +56,14 @@ export class Client {
 		);
 
 		this.layers = [];
+		this.layerLoggers = new Map();
+
 		this.listeners = new Map();
 		this.layerReverseMap = new Map();
-		this.layerLoggers = new Map();
+
+		this.readyListeners = [];
+		this.errorListeners = [];
+
 		this.commands = [];
 		this.buttons = [];
 
@@ -76,7 +84,9 @@ export class Client {
 		this.layers.push(layer);
 
 		this.layerReverseMap.clear();
+
 		this.rebuildListeners();
+		this.rebuildSpecialListeners();
 		this.rebuildCommands();
 		this.rebuildButtons();
 	}
@@ -88,6 +98,7 @@ export class Client {
 			if (layer.listeners) {
 				for (const listener of layer.listeners) {
 					this.layerReverseMap.set(listener, layer);
+
 					const existingArr = this.listeners.get(listener.event);
 					if (existingArr) {
 						existingArr.push(listener);
@@ -95,6 +106,23 @@ export class Client {
 						this.listeners.set(listener.event, [listener]);
 					}
 				}
+			}
+		}
+	}
+
+	private rebuildSpecialListeners() {
+		this.readyListeners = [];
+		this.errorListeners = [];
+
+		for (const layer of this.layers) {
+			if (layer.onReady) {
+				this.readyListeners.push(layer.onReady);
+				this.layerReverseMap.set(layer.onReady, layer);
+			}
+
+			if (layer.onError) {
+				this.errorListeners.push(layer.onError);
+				this.layerReverseMap.set(layer.onError, layer);
 			}
 		}
 	}
@@ -139,6 +167,29 @@ export class Client {
 	}
 
 	private registerListeners() {
+		this.discord.on(Events.ClientReady, async () => {
+			const ctx = new Context({ client: this });
+
+			for (const listener of this.readyListeners) {
+				await listener({
+					ctx,
+					logger: this.getLogger(this.layerReverseMap.get(listener)!),
+				});
+			}
+		});
+
+		this.discord.on(Events.Error, async (error) => {
+			const ctx = new Context({ client: this });
+
+			for (const listener of this.errorListeners) {
+				await listener({
+					error: error,
+					ctx,
+					logger: this.getLogger(this.layerReverseMap.get(listener)!),
+				});
+			}
+		});
+
 		this.discord.on(Events.MessageCreate, async (message) => {
 			const listeners = this.getListenersOf(Events.MessageCreate);
 			const ctx = new Context({ client: this });

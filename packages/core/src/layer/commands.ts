@@ -28,5 +28,3 @@ export interface LayerContextMenuCommand {
 }
 
 export type LayerCommand = LayerSlashCommand | LayerContextMenuCommand;
-
-export type LayerCommands = LayerCommand[];

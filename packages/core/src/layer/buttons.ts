@@ -7,5 +7,3 @@ export interface LayerButton {
 		data: { interaction: ButtonInteraction } & BaseContext
 	) => void | Promise<void>;
 }
-
-export type LayerButtons = LayerButton[];

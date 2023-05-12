@@ -1,12 +1,25 @@
-import { LayerButtons } from "./buttons";
-import { LayerCommands } from "./commands";
-import { LayerListeners } from "./listeners";
+import { LayerButton } from "./buttons";
+import { LayerCommand } from "./commands";
+import { LayerListener } from "./listeners";
+import { BaseContext } from "./baseContext";
+
+export type LayerReadyListener = (data: BaseContext) => void | Promise<void>;
+export type LayerErrorListener = (
+	data: {
+		error: unknown;
+	} & BaseContext
+) => void | Promise<void>;
 
 export interface Layer {
 	id: string;
-	listeners?: LayerListeners;
-	commands?: LayerCommands;
-	buttons?: LayerButtons;
+
+	onReady?: LayerReadyListener;
+	onError?: LayerErrorListener;
+
+	listeners?: LayerListener[];
+	commands?: LayerCommand[];
+	buttons?: LayerButton[];
+
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	api?: { [key: string]: Function };
 }

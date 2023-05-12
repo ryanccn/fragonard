@@ -2,7 +2,12 @@ import "dotenv/config";
 
 import { Client } from "@fragonard/core";
 import { GatewayIntentBits, OAuth2Scopes } from "discord.js";
-import { testLayer1, testLayer2, testLayer3 } from "./layers";
+import {
+	errorCatchingLayer,
+	testLayer1,
+	testLayer2,
+	testLayer3,
+} from "./layers";
 
 const client = new Client({
 	discordOptions: {
@@ -18,6 +23,7 @@ const client = new Client({
 client.use(testLayer1);
 client.use(testLayer2);
 client.use(testLayer3);
+client.use(errorCatchingLayer);
 
 client
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

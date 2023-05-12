@@ -46,7 +46,7 @@ export const testLayer2 = {
 				});
 				logger.warn("moyai'd, stopping propagation");
 
-				ctx.stopPropagation();
+				throw new Error("kaboom!");
 			},
 		},
 	],
@@ -64,4 +64,11 @@ export const testLayer3 = {
 			},
 		},
 	],
+} satisfies Layer;
+
+export const errorCatchingLayer = {
+	id: "error-layer",
+	onError({ error, logger }) {
+		logger.error("This is an error from the error catching layer", error);
+	},
 } satisfies Layer;
