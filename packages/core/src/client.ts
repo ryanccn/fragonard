@@ -47,6 +47,10 @@ export class Client {
 	}
 
 	use(layer: Layer) {
+		if (this.discord.isReady()) {
+			throw new Error("You can't add additional layers when running!");
+		}
+
 		if (this.layers.some((l) => l.id === layer.id)) {
 			throw new Error(`Layer with ID ${layer.id} already exists!`);
 		}
