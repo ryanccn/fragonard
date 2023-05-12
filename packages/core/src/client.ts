@@ -264,6 +264,10 @@ export class Client {
 		await rest.put(Routes.applicationCommands(app), {
 			body: this.commands.map((k) => k.data.toJSON()),
 		});
+
+		this.globalLogger.success(
+			`Automatically refreshed ${this.commands.length} slash (/) commands!`
+		);
 	}
 
 	async login({ app, token }: { app: string; token: string }) {
