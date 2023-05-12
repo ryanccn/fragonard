@@ -6,7 +6,8 @@ import {
 	Routes,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Layer, LayerCommands, LayerSlashCommand } from "~/layer";
+import { Layer } from "~/layer";
+import { LayerCommands, LayerSlashCommand } from "~/layer/commands";
 import {
 	LayerListener,
 	EventListener,
@@ -14,6 +15,7 @@ import {
 } from "~/layer/listeners";
 import { Context } from "~/context";
 import { createConsola, ConsolaInstance } from "consola";
+import { LayerButtons } from "./layer/buttons";
 
 interface ClientOptions {
 	discordOptions: DiscordOptions;
@@ -29,6 +31,7 @@ export class Client {
 	private listenerLayerMap: Map<LayerListener, Layer>;
 	private layerLoggers: Map<Layer, ConsolaInstance>;
 	private commands: LayerCommands;
+	private buttons: LayerButtons;
 
 	constructor(options: ClientOptions) {
 		this.discord = new DiscordClient(options.discordOptions);
@@ -42,6 +45,7 @@ export class Client {
 		this.listenerLayerMap = new Map();
 		this.layerLoggers = new Map();
 		this.commands = [];
+		this.buttons = [];
 
 		this.registerListeners();
 	}
@@ -60,6 +64,7 @@ export class Client {
 
 		this.rebuildListeners();
 		this.rebuildCommands();
+		this.rebuildButtons();
 	}
 
 	private rebuildListeners() {
@@ -86,6 +91,14 @@ export class Client {
 
 		for (const layer of this.layers) {
 			if (layer.commands) this.commands = this.commands.concat(layer.commands);
+		}
+	}
+
+	private rebuildButtons() {
+		this.buttons = [];
+
+		for (const layer of this.layers) {
+			if (layer.buttons) this.buttons = this.buttons.concat(layer.buttons);
 		}
 	}
 
@@ -147,6 +160,22 @@ export class Client {
 			for (const command of slashCommands) {
 				if (command.data.name === interaction.commandName) {
 					await command.handler(interaction);
+					break;
+				}
+			}
+		});
+
+		this.discord.on(Events.InteractionCreate, async (interaction) => {
+			if (!interaction.isButton()) return;
+
+			for (const button of this.buttons) {
+				if (
+					typeof button.customId === "string"
+						? button.customId === interaction.customId
+						: !!button.customId.exec(interaction.customId)
+				) {
+					await button.handler(interaction);
+					break;
 				}
 			}
 		});
