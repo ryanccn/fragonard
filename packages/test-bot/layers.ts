@@ -8,10 +8,12 @@ export const testLayer1 = {
 			event: Events.MessageCreate,
 			listener: async ({ message, logger }) => {
 				if (message.author.bot) return;
-				await message.reply("Hello 1");
-				logger.log("Boop!");
+				await message.reply({
+					content: "Hello 1",
+					allowedMentions: { parse: [] },
+				});
+
 				logger.warn("Boop!");
-				logger.error("Boom!");
 			},
 		},
 	],
@@ -20,7 +22,7 @@ export const testLayer1 = {
 			type: LayerCommandType.SlashCommand,
 			data: new SlashCommandBuilder().setName("ping").setDescription("Ping!"),
 			handler: async ({ interaction, logger }) => {
-				logger.success("owo!");
+				logger.info("owo!");
 				await interaction.reply("🥺");
 			},
 		},

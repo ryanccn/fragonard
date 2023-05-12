@@ -23,5 +23,10 @@ client
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	.login({ app: process.env.DISCORD_APP!, token: process.env.DISCORD_TOKEN! })
 	.then(() => {
-		console.log(client.discord.generateInvite({ scopes: [OAuth2Scopes.Bot] }));
+		const logger = client.getLogger();
+
+		logger.success("Started Fragonard test bot bot!");
+		logger.info(client.discord.generateInvite({ scopes: [OAuth2Scopes.Bot] }));
+		logger.warn("This is a test bot. And this is a test warning.");
+		logger.error("But this is not an error.");
 	});

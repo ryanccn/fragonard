@@ -14,7 +14,7 @@ export class Context {
 	}
 
 	getLogger<T extends Layer>(layer: T) {
-		return this.client.getLayerLogger(layer);
+		return this.client.getLogger(layer);
 	}
 
 	getAPI<T extends Layer>(layer: T): T["api"] {

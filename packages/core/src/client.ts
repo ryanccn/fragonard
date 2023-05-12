@@ -7,6 +7,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Layer } from "~/layer";
+
 import {
 	LayerCommand,
 	LayerCommands,
@@ -17,10 +18,11 @@ import {
 	EventListener,
 	EventListenerSupportedEvents,
 } from "~/layer/listeners";
-import { Context } from "~/context";
-import { createConsola, ConsolaInstance } from "consola";
 import { LayerButtons } from "./layer/buttons";
 import { LayerButton } from "./layer/buttons";
+
+import { Context } from "~/context";
+import { Logger } from "./logger";
 
 interface ClientOptions {
 	discordOptions: DiscordOptions;
@@ -28,8 +30,8 @@ interface ClientOptions {
 }
 
 export class Client {
-	discord: DiscordClient;
-	layers: Layer[];
+	public discord: DiscordClient;
+	public layers: Layer[];
 
 	private readonly options: ClientOptions;
 	private listeners: Map<EventListenerSupportedEvents, LayerListener[]>;
@@ -37,9 +39,11 @@ export class Client {
 		LayerListener | LayerButton | LayerCommand,
 		Layer
 	>;
-	private layerLoggers: Map<Layer, ConsolaInstance>;
+	private layerLoggers: Map<Layer, Logger>;
 	private commands: LayerCommands;
 	private buttons: LayerButtons;
+
+	private globalLogger: Logger;
 
 	constructor(options: ClientOptions) {
 		this.discord = new DiscordClient(options.discordOptions);
@@ -54,6 +58,8 @@ export class Client {
 		this.layerLoggers = new Map();
 		this.commands = [];
 		this.buttons = [];
+
+		this.globalLogger = new Logger();
 
 		this.registerListeners();
 	}
@@ -121,11 +127,13 @@ export class Client {
 		return listenerList as EventListener<E>[];
 	}
 
-	getLayerLogger(layer: Layer) {
+	getLogger(layer?: Layer) {
+		if (!layer) return this.globalLogger;
+
 		const existingLogger = this.layerLoggers.get(layer);
 		if (existingLogger) return existingLogger;
 
-		const logger = createConsola().withTag(layer.id);
+		const logger = new Logger(layer.id);
 		this.layerLoggers.set(layer, logger);
 		return logger;
 	}
@@ -140,7 +148,7 @@ export class Client {
 					await listener.listener({
 						message,
 						ctx,
-						logger: this.getLayerLogger(this.layerReverseMap.get(listener)!),
+						logger: this.getLogger(this.layerReverseMap.get(listener)!),
 					});
 					if (ctx.shouldStopPropagation) break;
 				}
@@ -155,7 +163,7 @@ export class Client {
 					await listener.listener({
 						message,
 						ctx,
-						logger: this.getLayerLogger(this.layerReverseMap.get(listener)!),
+						logger: this.getLogger(this.layerReverseMap.get(listener)!),
 					});
 					if (ctx.shouldStopPropagation) break;
 				}
@@ -171,9 +179,7 @@ export class Client {
 
 			for (const command of slashCommands) {
 				if (command.data.name === interaction.commandName) {
-					const logger = this.getLayerLogger(
-						this.layerReverseMap.get(command)!
-					);
+					const logger = this.getLogger(this.layerReverseMap.get(command)!);
 
 					await command.handler({ interaction, ctx, logger });
 					break;
@@ -192,7 +198,7 @@ export class Client {
 						? button.customId === interaction.customId
 						: !!button.customId.exec(interaction.customId)
 				) {
-					const logger = this.getLayerLogger(this.layerReverseMap.get(button)!);
+					const logger = this.getLogger(this.layerReverseMap.get(button)!);
 
 					await button.handler({ interaction, ctx, logger });
 					break;
