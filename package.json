@@ -6,7 +6,8 @@
 	"scripts": {
 		"build": "pnpm -r build",
 		"test-bot": "cd packages/test-bot && pnpm start",
-		"publish": "pnpm publish --recursive --filter '!test-bot' --access public",
+		"docs-dev": "cd docs && pnpm dev",
+		"publish": "pnpm publish --recursive --filter='!test-bot' --filter='!docs' --access public",
 		"lint": "eslint packages/"
 	},
 	"author": "Ryan Cao <hello@ryanccn.dev>",
