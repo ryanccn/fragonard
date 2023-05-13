@@ -1,4 +1,12 @@
 {
 	"singleQuote": false,
-	"useTabs": true
+	"useTabs": true,
+	"overrides": [
+		{
+			"files": ["docs/docs/**/*.md"],
+			"options": {
+				"useTabs": false
+			}
+		}
+	]
 }

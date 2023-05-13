@@ -7,14 +7,30 @@ export default defineConfig({
 	title: "Fragonard",
 	description: "A modular, extensible Discord bot framework.",
 
-	cleanUrls: "without-subfolders",
+	cleanUrls: true,
 
 	themeConfig: {
-		nav: [{ text: "Getting Started", link: "/getting-started" }],
+		nav: [
+			{ text: "Getting Started", link: "/guide/getting-started" },
+			{ text: "FAQ", link: "/guide/faq" },
+		],
+
 		socialLinks: [
 			{ icon: "github", link: "https://github.com/ryanccn/fragonard" },
 			{ icon: "discord", link: "https://discord.gg/ty7GCnN87U" },
 			{ icon: { svg: KOFI_ICON }, link: "https://ko-fi.com/ryancaodev" },
+		],
+
+		search: { provider: "local" },
+
+		sidebar: [
+			{
+				text: "Guide",
+				items: [
+					{ text: "Getting started", link: "/guide/getting-started" },
+					{ text: "Frequently asked questions", link: "/guide/faq" },
+				],
+			},
 		],
 	},
 });
