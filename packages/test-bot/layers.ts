@@ -1,7 +1,7 @@
-import { Layer, LayerCommandType } from "@fragonard/core";
+import { defineLayer, LayerCommandType } from "@fragonard/core";
 import { Events, SlashCommandBuilder } from "discord.js";
 
-export const testLayer1 = {
+export const testLayer1 = defineLayer({
 	id: "test-layer-1",
 	listeners: [
 		{
@@ -30,9 +30,9 @@ export const testLayer1 = {
 	api: {
 		getMessage: () => ":moyai:",
 	},
-} satisfies Layer;
+});
 
-export const testLayer2 = {
+export const testLayer2 = defineLayer({
 	id: "test-layer-2",
 	listeners: [
 		{
@@ -50,9 +50,9 @@ export const testLayer2 = {
 			},
 		},
 	],
-} satisfies Layer;
+});
 
-export const testLayer3 = {
+export const testLayer3 = defineLayer({
 	id: "test-layer-3",
 	listeners: [
 		{
@@ -64,11 +64,11 @@ export const testLayer3 = {
 			},
 		},
 	],
-} satisfies Layer;
+});
 
-export const errorCatchingLayer = {
+export const errorCatchingLayer = defineLayer({
 	id: "error-layer",
 	onError({ error, logger }) {
 		logger.error("This is an error from the error catching layer", error);
 	},
-} satisfies Layer;
+});
