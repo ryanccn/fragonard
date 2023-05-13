@@ -16,6 +16,10 @@ hero:
       text: View on GitHub
       link: https://github.com/ryanccn/fragonard
 
+  image:
+    src: /icon.png
+    alt: Fragonard
+
 features:
   - icon: 📝
     title: TypeScript-ready

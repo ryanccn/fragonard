@@ -15,6 +15,8 @@ export default defineConfig({
 			{ text: "FAQ", link: "/guide/faq" },
 		],
 
+		logo: "/icon.png",
+
 		socialLinks: [
 			{ icon: "github", link: "https://github.com/ryanccn/fragonard" },
 			{ icon: "discord", link: "https://discord.gg/ty7GCnN87U" },

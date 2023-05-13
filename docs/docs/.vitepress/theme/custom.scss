@@ -1,0 +1,25 @@
+:root {
+	--vp-c-brand: #ec4899;
+	--vp-c-brand-light: #f472b6;
+	--vp-c-brand-lighter: #f9a8d4;
+	--vp-c-brand-dark: #db2777;
+	--vp-c-brand-darker: #be185d;
+}
+
+.VPImage.logo {
+	border-radius: 9999px;
+}
+
+.VPHero.has-image .VPImage {
+	--hero-image-shadow-size: 32px;
+
+	border-radius: 9999px;
+	box-shadow: 0px 0px var(--hero-image-shadow-size) rgba(220 252 231 / 0.7);
+	transition-property: box-shadow;
+	transition-duration: 250ms;
+	transition-timing-function: ease-in-out;
+
+	&:hover {
+		--hero-image-shadow-size: 50px;
+	}
+}
