@@ -12,6 +12,7 @@ export default defineConfig({
 	themeConfig: {
 		nav: [
 			{ text: "Getting Started", link: "/guide/getting-started" },
+			{ text: "API Reference", link: "/reference/layer" },
 			{ text: "FAQ", link: "/guide/faq" },
 		],
 
@@ -31,6 +32,14 @@ export default defineConfig({
 				items: [
 					{ text: "Getting started", link: "/guide/getting-started" },
 					{ text: "Frequently asked questions", link: "/guide/faq" },
+				],
+			},
+			{
+				text: "API Reference",
+				items: [
+					{ text: "Layer", link: "/reference/layer" },
+					{ text: "Context", link: "/reference/context" },
+					{ text: "Logger", link: "/reference/logger" },
 				],
 			},
 		],

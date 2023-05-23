@@ -129,3 +129,5 @@ export const errorCatchingLayer = defineLayer({
   },
 });
 ```
+
+For more information, read [the API reference](../reference/layer.md).
