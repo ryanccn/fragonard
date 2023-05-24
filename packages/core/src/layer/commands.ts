@@ -3,6 +3,7 @@ import {
 	ContextMenuCommandBuilder,
 	ContextMenuCommandInteraction,
 	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
 } from "discord.js";
 import { BaseContext } from "./baseContext";
 
@@ -13,7 +14,7 @@ export enum LayerCommandType {
 
 export interface LayerSlashCommand {
 	type: LayerCommandType.SlashCommand;
-	data: SlashCommandBuilder;
+	data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
 	handler: (
 		data: { interaction: ChatInputCommandInteraction } & BaseContext
 	) => void | Promise<void>;
